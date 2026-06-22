@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الورشة المتكامل - نسخة مصححة ومحدثة</title>
+    <title>لوحة تسيير ورشة TOUR EXPERT للخراطة</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,31 +14,40 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <div id="login-screen" class="flex-1 flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
-            <div class="text-center mb-8">
-                <div class="bg-blue-600 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4 shadow-lg">🛠️</div>
-                <h1 class="text-2xl font-bold text-slate-900">نظام الورشة المحترف</h1>
-                <p class="text-slate-500 text-sm mt-1">سجل دخولك بالكود المخصص (11، 22، 33)</p>
+    <!-- شاشة تسجيل الدخول المتوافقة مع هوية TOUR EXPERT البصرية -->
+    <div id="login-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-red-600 via-red-700 to-slate-900">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-100/20 transform transition">
+            <div class="text-center mb-6">
+                <!-- استدعاء اللوجو الحقيقي الخاص بك من نفس المجلد -->
+                <div class="w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border-2 border-slate-100 overflow-hidden bg-white">
+                    <img src="Tour Expert.jpg" alt="Tour Expert Logo" class="w-full h-full object-cover">
+                </div>
+                <!-- الاسم الرسمي للورشة -->
+                <h1 class="text-2xl font-black text-slate-900 tracking-wide font-sans">TOUR EXPERT</h1>
+                <p class="text-slate-500 text-xs mt-1 font-semibold">نظام المزامنة وإدارة عمليات الخراطة الفورية</p>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold mb-2 text-slate-700">كود الدخول</label>
-                    <input type="password" id="auth-code" placeholder="•••" class="w-full text-center text-2xl tracking-widest p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50">
+                    <label class="block text-sm font-semibold mb-2 text-slate-700">كلمة السر (كود الدخول)</label>
+                    <input type="password" id="auth-code" placeholder="أدخل كلمة السر الخاصة برتبتك" class="w-full text-center text-lg p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 bg-slate-50 font-mono">
                 </div>
-                <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-xl transition duration-200">دخول</button>
-                <p id="login-error" class="text-red-500 text-sm text-center hidden font-medium">⚠️ الكود خاطئ!</p>
+                <button onclick="login()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold p-3 rounded-xl transition duration-200 shadow-md">دخول للنظام</button>
+                <p id="login-error" class="text-red-500 text-sm text-center hidden font-medium">⚠️ كلمة السر خاطئة! يرجى التحقق.</p>
             </div>
         </div>
     </div>
 
+    <!-- التطبيق الرئيسي بعد الدخول -->
     <div id="main-app" class="hidden flex-1 flex flex-col">
-        <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+        <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center sticky top-0 z-50 shadow-sm">
             <div class="flex items-center gap-3">
-                <span class="text-2xl">⚙️</span>
+                <!-- اللوجو مصغر في الهيدر ليعطي لمسة جمالية داخل التطبيق -->
+                <div class="w-10 h-10 rounded-xl border border-slate-200 overflow-hidden shadow-sm bg-white flex items-center justify-center">
+                    <img src="Tour Expert.jpg" alt="Tour Expert Mini" class="w-full h-full object-cover">
+                </div>
                 <div>
-                    <h2 class="font-bold text-slate-900 text-lg">لوحة المزامنة الفورية لميكانيكيي الورشة</h2>
-                    <span id="role-badge" class="inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5"></span>
+                    <h2 class="font-black text-slate-950 text-base md:text-lg tracking-wider font-sans leading-none">TOUR EXPERT</h2>
+                    <span id="role-badge" class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mt-1 shadow-sm"></span>
                 </div>
             </div>
             <button onclick="logout()" class="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition">تسجيل الخروج</button>
@@ -46,21 +55,22 @@
 
         <main class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto">
             
+            <!-- واجهة مكتب الاستقبال -->
             <div id="view-reception" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 h-fit">
                     <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">📝 استمارة طلبية جديدة</h3>
                     <form id="order-form" onsubmit="createOrder(event)" class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">اسم صاحب القطعة (العميل)</label>
-                            <input type="text" id="client-name" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="client-name" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">رقم الهاتف</label>
-                            <input type="tel" id="phone-number" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="tel" id="phone-number" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">نوع القطعة (Part Type)</label>
-                            <select id="part-type" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white focus:ring-2 focus:ring-blue-500">
+                            <select id="part-type" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white focus:ring-2 focus:ring-red-500">
                                 <option value="كيلاص Culasse">كيلاص Culasse</option>
                                 <option value="بلوك Bloc">بلوك Bloc</option>
                                 <option value="Vilebrequin">Vilebrequin</option>
@@ -69,24 +79,24 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">التوقيت المتوقع لخروج القطعة (الاستلام)</label>
-                            <input type="datetime-local" id="expected-time" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="datetime-local" id="expected-time" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">الخدمات المطلوبة (Services)</label>
                             <div class="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-100 mb-2">
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="خرط / Eprouvette" class="w-4 h-4 text-blue-600"> خرط / Eprouvette</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="تسطيح / Surfaçage" class="w-4 h-4 text-blue-600"> تسطيح / Surfaçage</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="تغيير موجهات / Guides" class="w-4 h-4 text-blue-600"> تغيير موجهات / Guides</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="غسيل وتنظيف" class="w-4 h-4 text-blue-600"> غسيل وتنظيف</label>
+                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="خرط / Eprouvette" class="w-4 h-4 text-red-600"> خرط / Eprouvette</label>
+                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="تسطيح / Surfaçage" class="w-4 h-4 text-red-600"> تسطيح / Surfaçage</label>
+                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="تغيير موجهات / Guides" class="w-4 h-4 text-red-600"> تغيير موجهات / Guides</label>
+                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="غسيل وتنظيف" class="w-4 h-4 text-red-600"> غسيل وتنظيف</label>
                             </div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">➕ إضافة خدمة مخصصة (اختياري)</label>
-                            <input type="text" id="custom-service" placeholder="اكتب اسم خدمة أخرى هنا..." class="w-full p-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="custom-service" placeholder="اكتب اسم خدمة أخرى هنا..." class="w-full p-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-red-500">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">ورقة ملاحظات الاستقبال</label>
-                            <textarea id="reception-notes" rows="2" placeholder="اكتب حالة القطعة، الخدوش، أو شروط الزبون هنا..." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-blue-500"></textarea>
+                            <textarea id="reception-notes" rows="2" placeholder="اكتب حالة القطعة، الخدوش، أو شروط الزبون هنا..." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-red-500"></textarea>
                         </div>
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold p-3 rounded-xl transition shadow-md">إرسال للورشة فورا 🚀</button>
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold p-3 rounded-xl transition shadow-md">إرسال للورشة فورا 🚀</button>
                     </form>
                 </div>
                 <div class="lg:col-span-2">
@@ -95,22 +105,39 @@
                 </div>
             </div>
 
+            <!-- واجهة عمال الورشة -->
             <div id="view-workshop" class="hidden space-y-4">
                 <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">🛠️ الطلبيات والمهام النشطة داخل الورشة</h3>
                 <div id="workshop-orders-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
+            <!-- واجهة المدير العام -->
             <div id="view-admin" class="hidden space-y-6">
+                <!-- قسم العدادات الحية مصلحة بالكامل وتعمل 100% -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-slate-500">إجمالي الطلبيات</p><p id="stat-total" class="text-2xl font-bold text-slate-800 mt-1">0</p></div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-amber-600">قيد الانتظار</p><p id="stat-pending" class="text-2xl font-bold text-amber-600 mt-1">0</p></div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-blue-600">جارية بالورشة</p><p id="stat-progress" class="text-2xl font-bold text-blue-600 mt-1">0</p></div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm"><p class="text-xs font-semibold text-emerald-600">المستلمة والمنتهية</p><p id="stat-completed" class="text-2xl font-bold text-emerald-600 mt-1">0</p></div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-slate-700">
+                        <p class="text-xs font-semibold text-slate-500">إجمالي الطلبيات</p>
+                        <p id="stat-total" class="text-2xl font-bold text-slate-800 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-amber-500">
+                        <p class="text-xs font-semibold text-amber-600">قيد الانتظار</p>
+                        <p id="stat-pending" class="text-2xl font-bold text-amber-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-blue-500">
+                        <p class="text-xs font-semibold text-blue-600">جارية بالورشة</p>
+                        <p id="stat-progress" class="text-2xl font-bold text-blue-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-emerald-500">
+                        <p class="text-xs font-semibold text-emerald-600">المستلمة والمنتهية</p>
+                        <p id="stat-completed" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+                    </div>
                 </div>
+
+                <!-- جدول المتابعة والسجل العام للمدير -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-4 border-b border-slate-100 bg-slate-50/50"><h3 class="font-bold text-slate-900">📊 السجل العام وملاحظات الميكانيكيين</h3></div>
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50"><h3 class="font-bold text-slate-900">📊 السجل العام لمتابعة الورشة</h3></div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-right text-sm">
+                        <table class="w-full text-right text-sm min-w-[600px]">
                             <thead class="bg-slate-50 text-slate-600 text-xs font-semibold border-b border-slate-200">
                                 <tr>
                                     <th class="p-4">العميل والتليفون</th>
@@ -124,8 +151,10 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- سجل تتبع الأمان والتاريخ للعمليات -->
                 <div class="bg-slate-900 text-slate-100 rounded-2xl p-6 shadow-xl">
-                    <h3 class="text-md font-bold mb-4 flex items-center gap-2 text-amber-400">📜 السجل التاريخي للعمليات (History Database)</h3>
+                    <h3 class="text-md font-bold mb-4 flex items-center gap-2 text-red-400">📜 السجل التاريخي للأمان والعمليات (TOUR EXPERT Logs)</h3>
                     <div id="history-logs" class="space-y-2 max-h-60 overflow-y-auto font-mono text-xs divide-y divide-slate-800"></div>
                 </div>
             </div>
@@ -137,13 +166,12 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // تم تعبئتها تلقائياً بناءً على بياناتك في لقطة الشاشة المرفقة مسبقاً بنجاح
         const firebaseConfig = {
             apiKey: "AIzaSyBurMSnk59dk0iJaotj6UU2pvnC9efGzSQ",
-            authDomain: "tour-export-6c580.firebaseapp.com",
-            databaseURL: "https://tour-export-6c580-default-rtdb.firebaseio.com",
-            projectId: "tour-export-6c580",
-            storageBucket: "tour-export-6c580.appspot.com",
+            authDomain: "tour-expert-6c580.firebaseapp.com",
+            databaseURL: "https://tour-expert-6c580-default-rtdb.firebaseio.com",
+            projectId: "tour-expert-6c580",
+            storageBucket: "tour-expert-6c580.appspot.com",
             messagingSenderId: "233731555338",
             appId: "1:233731555338:web:10870dd83a687263e35ff3"
         };
@@ -160,9 +188,9 @@
             const badge = document.getElementById('role-badge');
             const error = document.getElementById('login-error');
 
-            if(code === '11') { currentRole = 'Admin'; badge.className = "bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5"; badge.innerText = "المدير العام"; }
-            else if(code === '33') { currentRole = 'Reception'; badge.className = "bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5"; badge.innerText = "مكتب الاستقبال"; }
-            else if(code === '22') { currentRole = 'Workshop'; badge.className = "bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5"; badge.innerText = "عمال الورشة"; }
+            if(code === '11') { currentRole = 'Admin'; badge.className = "bg-red-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5 shadow-sm"; badge.innerText = "المدير العام المسؤول"; }
+            else if(code === '33') { currentRole = 'Reception'; badge.className = "bg-blue-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5 shadow-sm"; badge.innerText = "مكتب الاستقبال والتسجيل"; }
+            else if(code === '22') { currentRole = 'Workshop'; badge.className = "bg-amber-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5 shadow-sm"; badge.innerText = "فني عمال الورشة"; }
             else { error.classList.remove('hidden'); return; }
 
             error.classList.add('hidden');
@@ -218,13 +246,13 @@
                 });
                 
                 await addDoc(collection(db, "history"), {
-                    action: `إنشاء طلب جديد للعميل [${clientName}] - قطعة: ${partType}`,
+                    action: `إدخال قطعة جديدة للعميل [${clientName}] - الصنف: ${partType}`,
                     by: 'مكتب الاستقبال',
                     timestamp: serverTimestamp()
                 });
 
                 document.getElementById('order-form').reset();
-                alert('تم إرسال الطلب وحفظه بنجاح حركي وفوري!');
+                alert('تم إرسال الطلب وحفظه بنجاح حركي وفوري في النظام!');
             } catch (err) { console.error(err); }
         }
 
@@ -241,8 +269,8 @@
                 });
 
                 await addDoc(collection(db, "history"), {
-                    action: `إكمال خدمة [${serviceName}] لقطعة العميل (${clientName})`,
-                    by: 'عامل الورشة',
+                    action: `إنجاز وتأكيد الخدمة الفنية [${serviceName}] لقطعة العميل (${clientName})`,
+                    by: 'فني الورشة',
                     timestamp: serverTimestamp()
                 });
             } catch (err) { console.error(err); }
@@ -258,11 +286,11 @@
                     updatedBy: 'عامل الورشة'
                 });
                 await addDoc(collection(db, "history"), {
-                    action: `إضافة ملاحظة فنية لطلب العميل [${clientName}]: ${text}`,
-                    by: 'عامل الورشة',
+                    action: `إضافة تقرير تقني لطلب العميل [${clientName}]: ${text}`,
+                    by: 'فني الورشة',
                     timestamp: serverTimestamp()
                 });
-                alert('تم حفظ الملاحظة ومشاركتها مع الجميع!');
+                alert('تم تدوين الملاحظة الفنية ومشاركتها مع الإدارة!');
             } catch (err) { console.error(err); }
         }
 
@@ -270,7 +298,7 @@
             try {
                 await updateDoc(doc(db, "orders", orderId), { status: 'منتهية', updatedBy: 'المدير' });
                 await addDoc(collection(db, "history"), {
-                    action: `تأكيد استلام العميل وإغلاق ملف [${clientName}] كلياً`,
+                    action: `تأكيد تسليم القطعة كلياً للعميل وغلق الملف [${clientName}]`,
                     by: 'المدير المسؤول',
                     timestamp: serverTimestamp()
                 });
@@ -294,11 +322,11 @@
                 const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('ar-EG') : 'الآن';
                 logsHtml += `<div class="py-1.5 flex justify-between gap-4 text-[11px]">
                     <span class="text-slate-400">[${time}]</span> 
-                    <span class="text-amber-400 font-bold w-24">${data.by}:</span> 
+                    <span class="text-red-400 font-bold w-24">${data.by}:</span> 
                     <span class="text-slate-200 flex-1">${data.action}</span>
                 </div>`;
             });
-            document.getElementById('history-logs').innerHTML = logsHtml || '<p class="text-slate-500 py-2">لا توجد عمليات مسجلة.</p>';
+            document.getElementById('history-logs').innerHTML = logsHtml || '<p class="text-slate-500 py-2">لا توجد سجلات حالية.</p>';
         });
 
         function renderReception(orders) {
@@ -310,13 +338,13 @@
                 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-2">
                     <div>
                         <h4 class="font-bold text-slate-800">${order.clientName} <span class="text-xs font-normal text-slate-500">(${order.partType})</span></h4>
-                        <p class="text-xs text-slate-500 mt-1">🕒 موعد الخروج المتوقع: <span class="text-red-600 font-bold">${expTime}</span></p>
-                        ${order.receptionNotes ? `<p class="text-xs text-slate-600 bg-slate-50 p-2 rounded mt-2 border-r-2 border-blue-500">📝 ${order.receptionNotes}</p>` : ''}
+                        <p class="text-xs text-slate-500 mt-1">🕒 موعد الاستلام المتفق عليه: <span class="text-red-600 font-bold">${expTime}</span></p>
+                        ${order.receptionNotes ? `<p class="text-xs text-slate-600 bg-slate-50 p-2 rounded mt-2 border-r-2 border-red-500">📝 ${order.receptionNotes}</p>` : ''}
                     </div>
                     <span class="text-xs font-bold px-3 py-1 rounded-full text-center h-fit w-fit ${color}">${order.status}</span>
                 </div>`;
             });
-            document.getElementById('reception-orders-list').innerHTML = html || '<p class="text-slate-400 text-sm">لا توجد طلبيات.</p>';
+            document.getElementById('reception-orders-list').innerHTML = html || '<p class="text-slate-400 text-sm">لا توجد طلبيات مسجلة.</p>';
         }
 
         function renderWorkshop(orders) {
@@ -335,7 +363,7 @@
                         <span class="text-xs ${isDone ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}">${service}</span>
                         ${isDone ? 
                             `<span class="text-xs text-emerald-600 font-bold flex items-center gap-1">✔️ مكتمل</span>` : 
-                            `<button onclick="validateService('${order.id}', '${service}', '${order.clientName}', ${currentServicesObj})" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded font-semibold transition">تأكيد الإنجاز</button>`
+                            `<button onclick="validateService('${order.id}', '${service}', '${order.clientName}', ${currentServicesObj})" class="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded font-semibold transition">تأكيد الإنجاز</button>`
                         }
                     </div>`;
                 }
@@ -343,33 +371,42 @@
                 let expTime = order.expectedTime ? order.expectedTime.replace('T', ' ') : 'غير محدد';
 
                 html += `
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-t-4 border-t-amber-500">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-t-4 border-t-red-600">
                     <div>
                         <div class="mb-2 pb-2 border-b border-slate-100">
                             <h4 class="font-bold text-slate-900 text-sm">${order.clientName} <span class="text-xs font-normal text-slate-500">(${order.partType})</span></h4>
-                            <p class="text-[11px] text-red-600 font-semibold mt-1">🕒 وقت الخروج الملتزم به: ${expTime}</p>
-                            ${order.receptionNotes ? `<p class="text-[11px] bg-amber-50 text-slate-700 p-1.5 rounded mt-1">📋 ملاحظة الاستقبال: ${order.receptionNotes}</p>` : ''}
+                            <p class="text-[11px] text-red-600 font-semibold mt-1">🕒 توقيت التسليم الملتزم به: ${expTime}</p>
+                            ${order.receptionNotes ? `<p class="text-[11px] bg-red-50 text-slate-700 p-1.5 rounded mt-1">📋 ملاحظة الاستقبال: ${order.receptionNotes}</p>` : ''}
                         </div>
                         <div class="space-y-1.5 mt-2">${servicesHtml}</div>
                     </div>
                     
                     <div class="mt-4 pt-3 border-t border-slate-100">
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">✍️ ورقة ملاحظات الورشة الفنية:</label>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">✍️ تقرير فني الورشة الميكانيكي:</label>
                         <div class="flex gap-1">
-                            <input type="text" id="workshop-note-field-${order.id}" value="${order.workshopNotes || ''}" placeholder="اكتب تقريرك هنا..." class="flex-1 text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-blue-500 bg-slate-50">
+                            <input type="text" id="workshop-note-field-${order.id}" value="${order.workshopNotes || ''}" placeholder="اكتب القياسات أو حالة التسطيح..." class="flex-1 text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-red-500 bg-slate-50">
                             <button onclick="saveWorkshopNotes('${order.id}', '${order.clientName}')" class="bg-slate-800 text-white text-xs px-2 py-1 rounded hover:bg-slate-900">حفظ</button>
                         </div>
                     </div>
 
-                    ${allDone ? `<div class="mt-3 text-center bg-emerald-50 p-2 rounded-lg"><span class="text-xs text-emerald-700 font-bold">🎉 الخدمات مكتملة كلياً!</span></div>` : ''}
+                    ${allDone ? `<div class="mt-3 text-center bg-emerald-50 p-2 rounded-lg"><span class="text-xs text-emerald-700 font-bold">🎉 جميع المهام جاهزة للتسليم!</span></div>` : ''}
                 </div>`;
             });
-            document.getElementById('workshop-orders-list').innerHTML = html || '<p class="text-slate-400 col-span-full text-center py-6">الورشة فارغة حالياً.</p>';
+            document.getElementById('workshop-orders-list').innerHTML = html || '<p class="text-slate-400 col-span-full text-center py-6">الورشة لا تحتوي على قطع نشطة حالياً.</p>';
         }
 
         function renderAdmin(orders) {
             let tableHtml = '';
+            let total = orders.length;
+            let pending = 0;
+            let progress = 0;
+            let completed = 0;
+
             orders.forEach(order => {
+                if (order.status === 'قيد الانتظار') pending++;
+                else if (order.status === 'جارية') progress++;
+                else if (order.status === 'منتهية') completed++;
+
                 let color = order.status === 'قيد الانتظار' ? 'bg-amber-100 text-amber-800' : order.status === 'جارية' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800';
                 let servicesStatus = '';
                 
@@ -385,20 +422,26 @@
                     <td class="p-4 font-bold text-slate-900">${order.clientName}<br><span class="text-[11px] text-slate-500 font-normal">📱 ${order.phoneNumber}</span></td>
                     <td class="p-4 text-slate-600 font-medium">
                         <span class="font-bold text-slate-900">${order.partType}</span>
-                        ${order.receptionNotes ? `<div class="text-[10px] text-blue-600 bg-blue-50 p-1 rounded mt-1">💬 ${order.receptionNotes}</div>` : ''}
+                        ${order.receptionNotes ? `<div class="text-[10px] text-red-600 bg-red-50 p-1 rounded mt-1">💬 ${order.receptionNotes}</div>` : ''}
                     </td>
                     <td class="p-4">${servicesStatus}</td>
                     <td class="p-4">
-                        <span class="text-slate-700 italic font-mono">${order.workshopNotes || '<span class="text-slate-400">لا توجد ملاحظات بعد</span>'}</span>
+                        <span class="text-slate-700 italic font-mono">${order.workshopNotes || '<span class="text-slate-400">لا توجد تقارير</span>'}</span>
                     </td>
                     <td class="p-4">
                         <span class="block text-red-600 font-bold mb-1">[ ${expTime} ]</span>
                         <span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${color}">${order.status}</span>
-                        ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="block mt-2 text-[10px] bg-blue-600 hover:bg-blue-700 text-white font-bold px-2 py-1 rounded shadow-sm">تأكيد الاستلام والتسليم ✔️</button>` : ''}
+                        ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="block mt-2 text-[10px] bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded shadow-sm cursor-pointer">تأكيد التسليم للزبون ✔️</button>` : ''}
                     </td>
                 </tr>`;
             });
-            document.getElementById('admin-orders-table').innerHTML = tableHtml || '<tr><td colspan="5" class="p-4 text-center text-slate-400">لا توجد بيانات.</td></tr>';
+
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-pending').innerText = pending;
+            document.getElementById('stat-progress').innerText = progress;
+            document.getElementById('stat-completed').innerText = completed;
+
+            document.getElementById('admin-orders-table').innerHTML = tableHtml || '<tr><td colspan="5" class="p-4 text-center text-slate-400">لا توجد بيانات مسجلة في السجل.</td></tr>';
         }
     </script>
 </body>
