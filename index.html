@@ -5,77 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تسيير ورشة TOUR EXPERT للخراطة</title>
     
-    <!-- الأيقونات الخاصة بالاختصارات والموقع (للحاسوب، الأندرويد، والآيفون) -->
+    <!-- الأيقونات الخاصة بالاختصارات والموقع -->
     <link rel="icon" type="image/jpeg" href="Tour Expert.jpg?v=1">
     <link rel="apple-touch-icon" href="Tour Expert.jpg?v=1">
     
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Cairo', sans-serif; }
+        body { font-family: 'Cairo', sans-serif; scroll-behavior: smooth; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .animate-pulse-subtle { animation: pulseSubtle 2s infinite; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseSubtle { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
-    <!-- شاشة تسجيل الدخول المتوافقة مع هوية TOUR EXPERT البصرية -->
-    <div id="login-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-red-600 via-red-700 to-slate-900">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-100/20 transform transition">
+    <!-- نظام التنبيهات المنبثقة داخل التطبيق -->
+    <div id="notification-toast" class="fixed top-5 left-5 z-[100] transform -translate-x-full transition-transform duration-300 max-w-sm w-full bg-slate-900 text-white p-4 rounded-xl shadow-2xl border border-red-500 flex items-center gap-3 hidden">
+        <div class="bg-red-600 p-2 rounded-lg text-lg animate-bounce">🔔</div>
+        <div>
+            <h5 class="font-bold text-sm text-red-400">طلبية جديدة بالورشة!</h5>
+            <p id="toast-message" class="text-xs text-slate-300 mt-0.5"></p>
+        </div>
+    </div>
+
+    <!-- شاشة تسجيل الدخول المتوافقة مع هوية TOUR EXPERT البصرية المتقدمة -->
+    <div id="login-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-red-600 via-slate-900 to-slate-950 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.15)_0%,transparent_70%)]"></div>
+        <div class="bg-white/95 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/20 transform transition duration-300 hover:shadow-red-500/10 relative z-10 animate-fade-in">
             <div class="text-center mb-6">
-                <!-- استدعاء اللوجو الحقيقي الخاص بك من نفس المجلد -->
-                <div class="w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg border-2 border-slate-100 overflow-hidden bg-white">
+                <div class="w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl border-2 border-red-500 overflow-hidden bg-white animate-pulse-subtle">
                     <img src="Tour Expert.jpg" alt="Tour Expert Logo" class="w-full h-full object-cover">
                 </div>
-                <!-- الاسم الرسمي للورشة -->
-                <h1 class="text-2xl font-black text-slate-900 tracking-wide font-sans">TOUR EXPERT</h1>
-                <p class="text-slate-500 text-xs mt-1 font-semibold">نظام المزامنة وإدارة عمليات الخراطة الفورية</p>
+                <h1 class="text-3xl font-black text-slate-950 tracking-wide font-sans bg-gradient-to-l from-red-600 to-slate-900 bg-clip-text text-transparent">TOUR EXPERT</h1>
+                <p class="text-slate-500 text-xs mt-1 font-bold">نظام المزامنة وإدارة عمليات الخراطة الفورية</p>
+                <!-- زر طلب تفعيل الإشغارات الخارجية -->
+                <button onclick="requestNotificationPermission()" id="perm-btn" class="mt-3 inline-block text-[11px] bg-amber-50 text-amber-700 font-bold px-3 py-1 rounded-lg border border-amber-200 cursor-pointer hover:bg-amber-100 transition">🔔 اضغط هنا لتفعيل إشعارات الهاتف الخارجية</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold mb-2 text-slate-700">كلمة السر (كود الدخول)</label>
-                    <input type="password" id="auth-code" placeholder="أدخل كلمة السر الخاصة برتبتك" class="w-full text-center text-lg p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 bg-slate-50 font-mono">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">اسم المستخدم (اكتب اسمك الكامل)</label>
+                    <input type="text" id="auth-name" placeholder="مثال: محمد الميكانيكي" class="w-full text-center p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 bg-slate-50 text-sm font-semibold transition">
                 </div>
-                <button onclick="login()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold p-3 rounded-xl transition duration-200 shadow-md">دخول للنظام</button>
-                <p id="login-error" class="text-red-500 text-sm text-center hidden font-medium">⚠️ كلمة السر خاطئة! يرجى التحقق.</p>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">رمز الدخول الموحد لرتبتك</label>
+                    <input type="password" id="auth-code" placeholder="••••" class="w-full text-center text-xl p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 bg-slate-50 font-mono tracking-widest transition">
+                </div>
+                <button onclick="login()" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold p-3.5 rounded-xl transition duration-200 shadow-lg shadow-red-600/20 active:scale-[0.99] cursor-pointer">دخول آمن للنظام 🚀</button>
+                <p id="login-error" class="text-red-500 text-xs text-center hidden font-bold animate-pulse">⚠️ يرجى كتابة الاسم والتحقق من كلمة السر الصحيحة!</p>
             </div>
         </div>
     </div>
 
     <!-- التطبيق الرئيسي بعد الدخول -->
     <div id="main-app" class="hidden flex-1 flex flex-col">
-        <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+        <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-6 py-3.5 flex justify-between items-center sticky top-0 z-50 shadow-sm">
             <div class="flex items-center gap-3">
-                <!-- اللوجو مصغر في الهيدر ليعطي لمسة جمالية داخل التطبيق -->
-                <div class="w-10 h-10 rounded-xl border border-slate-200 overflow-hidden shadow-sm bg-white flex items-center justify-center">
+                <div class="w-11 h-11 rounded-xl border-2 border-red-500 overflow-hidden shadow-md bg-white flex items-center justify-center transition hover:scale-105">
                     <img src="Tour Expert.jpg" alt="Tour Expert Mini" class="w-full h-full object-cover">
                 </div>
                 <div>
-                    <h2 class="font-black text-slate-950 text-base md:text-lg tracking-wider font-sans leading-none">TOUR EXPERT</h2>
-                    <span id="role-badge" class="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mt-1 shadow-sm"></span>
+                    <h2 class="font-black text-slate-950 text-lg md:text-xl tracking-wider font-sans leading-none">TOUR EXPERT</h2>
+                    <div class="flex flex-col md:flex-row md:items-center gap-1 mt-1">
+                        <span id="role-badge" class="inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-sm w-fit"></span>
+                        <span id="user-display-name" class="text-xs text-slate-600 font-bold md:mr-2"></span>
+                    </div>
                 </div>
             </div>
-            <button onclick="logout()" class="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition">تسجيل الخروج</button>
+            <button onclick="logout()" class="text-xs font-bold text-red-600 hover:text-white border border-red-200 hover:border-red-600 hover:bg-red-600 px-4 py-2 rounded-xl transition-all duration-200 shadow-sm active:scale-95 cursor-pointer">تسجيل الخروج</button>
         </header>
 
-        <main class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto">
+        <main class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto space-y-6">
             
             <!-- واجهة مكتب الاستقبال -->
-            <div id="view-reception" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 h-fit">
-                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">📝 استمارة طلبية جديدة</h3>
+            <div id="view-reception" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 h-fit sticky top-24">
+                    <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">📝 تسجيل طلبية جديدة</h3>
                     <form id="order-form" onsubmit="createOrder(event)" class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">اسم صاحب القطعة (العميل)</label>
-                            <input type="text" id="client-name" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">اسم صاحب القطعة (العميل)</label>
+                            <input type="text" id="client-name" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500 text-sm font-semibold transition bg-slate-50">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">رقم الهاتف</label>
-                            <input type="tel" id="phone-number" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">رقم الهاتف</label>
+                            <input type="tel" id="phone-number" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500 text-sm font-semibold tracking-wider transition bg-slate-50">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">نوع القطعة (Part Type)</label>
-                            <select id="part-type" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-white focus:ring-2 focus:ring-red-500">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">نوع القطعة (Part Type)</label>
+                            <select id="part-type" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none bg-slate-50 text-sm font-semibold focus:ring-2 focus:ring-red-500">
                                 <option value="كيلاص Culasse">كيلاص Culasse</option>
                                 <option value="بلوك Bloc">بلوك Bloc</option>
                                 <option value="Vilebrequin">Vilebrequin</option>
@@ -83,84 +104,91 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">التوقيت المتوقع لخروج القطعة (الاستلام)</label>
-                            <input type="datetime-local" id="expected-time" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">توقيت الخروج المتوقع (الاستلام للزبون)</label>
+                            <input type="datetime-local" id="expected-time" required class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-red-500 text-sm font-semibold transition bg-slate-50">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">الخدمات المطلوبة (Services)</label>
-                            <div class="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-100 mb-2">
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="خرط / Eprouvette" class="w-4 h-4 text-red-600"> خرط / Eprouvette</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="تسطيح / Surfaçage" class="w-4 h-4 text-red-600"> تسطيح / Surfaçage</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="تغيير موجهات / Guides" class="w-4 h-4 text-red-600"> تغيير موجهات / Guides</label>
-                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" value="غسيل وتنظيف" class="w-4 h-4 text-red-600"> غسيل وتنظيف</label>
+                            <label class="block text-xs font-bold text-slate-700 mb-2">الخدمات المطلوبة (Services)</label>
+                            <div class="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200/60 mb-2">
+                                <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer hover:text-red-600 transition"><input type="checkbox" value="خرط / Eprouvette" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"> خرط / Eprouvette</label>
+                                <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer hover:text-red-600 transition"><input type="checkbox" value="تسطيح / Surfaçage" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"> تسطيح / Surfaçage</label>
+                                <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer hover:text-red-600 transition"><input type="checkbox" value="تغيير موجهات / Guides" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"> تغيير موجهات / Guides</label>
+                                <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer hover:text-red-600 transition"><input type="checkbox" value="غسيل وتنظيف" class="w-4 h-4 rounded text-red-600 focus:ring-red-500"> غسيل وتنظيف</label>
                             </div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">➕ إضافة خدمة مخصصة (اختياري)</label>
-                            <input type="text" id="custom-service" placeholder="اكتب اسم خدمة أخرى هنا..." class="w-full p-2 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-red-500">
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">➕ إضافة خدمة مخصصة (اختياري)</label>
+                            <input type="text" id="custom-service" placeholder="اكتب اسم خدمة أخرى هنا..." class="w-full p-2 border border-slate-200 rounded-xl outline-none text-xs font-semibold focus:ring-2 focus:ring-red-500 transition">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">ورقة ملاحظات الاستقبال</label>
-                            <textarea id="reception-notes" rows="2" placeholder="اكتب حالة القطعة، الخدوش، أو شروط الزبون هنا..." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none text-sm focus:ring-2 focus:ring-red-500"></textarea>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">ملاحظات الاستقبال الفورية</label>
+                            <textarea id="reception-notes" rows="2" placeholder="حالة القطعة، الخدوش الفطرية، أو شروط الزبون الخاصة..." class="w-full p-2.5 border border-slate-200 rounded-xl outline-none text-xs font-semibold focus:ring-2 focus:ring-red-500 transition bg-slate-50"></textarea>
                         </div>
-                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold p-3 rounded-xl transition shadow-md">إرسال للورشة فورا 🚀</button>
+                        <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold p-3 rounded-xl transition shadow-md cursor-pointer active:scale-[0.98]">إرسال فوري للورشة 🚀</button>
                     </form>
                 </div>
-                <div class="lg:col-span-2">
-                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">📋 مراقبة وتتبع الطلبيات الحالية</h3>
+                <div class="lg:col-span-2 space-y-4">
+                    <h3 class="text-lg font-black text-slate-900 flex items-center gap-2">📋 مراقبة وتتبع الطلبيات الحالية</h3>
                     <div id="reception-orders-list" class="space-y-3"></div>
                 </div>
             </div>
 
             <!-- واجهة عمال الورشة -->
-            <div id="view-workshop" class="hidden space-y-4">
-                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">🛠️ الطلبيات والمهام النشطة داخل الورشة</h3>
+            <div id="view-workshop" class="hidden space-y-4 animate-fade-in">
+                <h3 class="text-lg font-black text-slate-900 flex items-center gap-2">🛠️ المهام والقطع النشطة داخل الورشة الآن</h3>
                 <div id="workshop-orders-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
-            <!-- واجهة المدير العام -->
-            <div id="view-admin" class="hidden space-y-6">
-                <!-- قسم العدادات الحية -->
+            <!-- واجهة المدير العام (تحتوي على الإحصائيات، السجل العام، والسجل التاريخي للأمان) -->
+            <div id="view-admin" class="hidden space-y-6 animate-fade-in">
+                <!-- قسم العدادات الحية مدمجة الألوان -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-slate-700">
-                        <p class="text-xs font-semibold text-slate-500">إجمالي الطلبيات</p>
-                        <p id="stat-total" class="text-2xl font-bold text-slate-800 mt-1">0</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-slate-800 hover:scale-[1.02] transition">
+                        <p class="text-xs font-bold text-slate-500">إجمالي الطلبيات</p>
+                        <p id="stat-total" class="text-2xl font-black text-slate-900 mt-1">0</p>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-amber-500">
-                        <p class="text-xs font-semibold text-amber-600">قيد الانتظار</p>
-                        <p id="stat-pending" class="text-2xl font-bold text-amber-600 mt-1">0</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-amber-500 hover:scale-[1.02] transition">
+                        <p class="text-xs font-bold text-amber-600">قيد الانتظار</p>
+                        <p id="stat-pending" class="text-2xl font-black text-amber-600 mt-1">0</p>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-blue-500">
-                        <p class="text-xs font-semibold text-blue-600">جارية بالورشة</p>
-                        <p id="stat-progress" class="text-2xl font-bold text-blue-600 mt-1">0</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-blue-600 hover:scale-[1.02] transition">
+                        <p class="text-xs font-bold text-blue-600">جارية بالورشة</p>
+                        <p id="stat-progress" class="text-2xl font-black text-blue-600 mt-1">0</p>
                     </div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-emerald-500">
-                        <p class="text-xs font-semibold text-emerald-600">المستلمة والمنتهية</p>
-                        <p id="stat-completed" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-emerald-500 hover:scale-[1.02] transition">
+                        <p class="text-xs font-bold text-emerald-600">المستلمة والمنتهية</p>
+                        <p id="stat-completed" class="text-2xl font-black text-emerald-600 mt-1">0</p>
                     </div>
                 </div>
 
-                <!-- جدول المتابعة والسجل العام للمدير -->
+                <!-- جدول المتابعة المتقدم للمدير العام -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-4 border-b border-slate-100 bg-slate-50/50"><h3 class="font-bold text-slate-900">📊 السجل العام لمتابعة الورشة</h3></div>
+                    <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        <h3 class="font-black text-slate-900">📊 لوحة التحكم والسجل العام للورشة</h3>
+                    </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-right text-sm min-w-[600px]">
-                            <thead class="bg-slate-50 text-slate-600 text-xs font-semibold border-b border-slate-200">
+                        <table class="w-full text-right text-xs min-w-[750px]">
+                            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
                                 <tr>
-                                    <th class="p-4">العميل والتليفون</th>
-                                    <th class="p-4">النوع والملاحظات</th>
-                                    <th class="p-4">الخدمات وتأكيداتها</th>
-                                    <th class="p-4">ملاحظات الورشة الفنية</th>
-                                    <th class="p-4">توقيت الخروج المتوقع والحالة</th>
+                                    <th class="p-4 text-sm">العميل والهاتف</th>
+                                    <th class="p-4 text-sm">نوع القطعة وملاحظاتها</th>
+                                    <th class="p-4 text-sm">الخدمات والمسؤول عن صيانة كل خدمة</th>
+                                    <th class="p-4 text-sm">ملاحظات الورشة الفنية</th>
+                                    <th class="p-4 text-sm">التوقيت والحالة الإدارية</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-orders-table" class="divide-y divide-slate-100"></tbody>
+                            <tbody id="admin-orders-table" class="divide-y divide-slate-100 font-semibold"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- سجل تتبع الأمان والتاريخ للعمليات -->
-                <div class="bg-slate-900 text-slate-100 rounded-2xl p-6 shadow-xl">
-                    <h3 class="text-md font-bold mb-4 flex items-center gap-2 text-red-400">📜 السجل التاريخي للأمان والعمليات (TOUR EXPERT Logs)</h3>
-                    <div id="history-logs" class="space-y-2 max-h-60 overflow-y-auto font-mono text-xs divide-y divide-slate-800"></div>
+                <!-- قسم السجل التاريخي للأمان (حساب المدير فقط وقابل للطي) -->
+                <div class="bg-slate-950 text-slate-100 rounded-2xl shadow-xl overflow-hidden border border-slate-800 transition-all duration-300">
+                    <button onclick="toggleHistory()" class="w-full p-4 md:p-5 flex justify-between items-center bg-slate-900/80 hover:bg-slate-900 font-black text-xs md:text-sm text-red-400 cursor-pointer outline-none transition">
+                        <span class="flex items-center gap-2">📜 السجل التاريخي للأمان ومراقبة الموظفين الحية (Admin Logs Only)</span>
+                        <span id="history-arrow" class="text-xs font-bold bg-slate-800 px-3 py-1 rounded-lg text-slate-300">🔽 إضغط لعرض السجل المباشر</span>
+                    </button>
+                    <div id="history-wrapper" class="hidden p-5 border-t border-slate-800 bg-slate-950">
+                        <div id="history-logs" class="space-y-2 max-h-60 overflow-y-auto font-mono text-[11px] divide-y divide-slate-900"></div>
+                    </div>
                 </div>
             </div>
 
@@ -169,7 +197,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBurMSnk59dk0iJaotj6UU2pvnC9efGzSQ",
@@ -185,19 +213,110 @@
         const db = getFirestore(app);
 
         let currentRole = null;
+        let userName = "";
+        let isFirstLoad = true; 
+
+        // تفعيل طلب صلاحيات الإشعارات الخارجية للهاتف
+        window.requestNotificationPermission = function() {
+            if ("Notification" in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        alert("🎉 تم تفعيل الإشعارات الخارجية للهاتف والمستندات بنجاح تام!");
+                        const btn = document.getElementById('perm-btn');
+                        if(btn) btn.classList.add('hidden');
+                    } else {
+                        alert("⚠️ لقد رفضت الصلاحية، يرجى تفعيلها من إعدادات المتصفح لتلقي التنبيهات والشاشة مغلقة.");
+                    }
+                });
+            } else {
+                alert("المتصفح لا يدعم نظام التنبيهات الخارجية.");
+            }
+        }
+
+        // دالة إنشاء صوت إشعار حقيقي وعالي عند إدخال طلبية جديدة
+        function playNotificationSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // نغمة D5 مر تفعة ونقية
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); // نغمة A5
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch(e) { console.error("Audio Context Error", e); }
+        }
+
+        // دالة إرسال الإشعار الخارجي على شاشة القفل والأنظمة بالخارج
+        function sendExternalNotification(title, message) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    new Notification(title, {
+                        body: message,
+                        icon: "Tour Expert.jpg",
+                        vibrate: [200, 100, 200]
+                    });
+                } catch(e) { console.error("Notification Error", e); }
+            }
+        }
+
+        // فحص الذاكرة المحلية لمعرفة ما إذا كان هناك عامل مسجل مسبقاً
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedRole = localStorage.getItem('tour_expert_role');
+            const savedName = localStorage.getItem('tour_expert_username');
+            
+            if ("Notification" in window && Notification.permission === "granted") {
+                const btn = document.getElementById('perm-btn');
+                if(btn) btn.classList.add('hidden');
+            }
+
+            if(savedRole && savedName) {
+                currentRole = savedRole;
+                userName = savedName;
+                
+                const loginScreen = document.getElementById('login-screen');
+                const mainApp = document.getElementById('main-app');
+                const badge = document.getElementById('role-badge');
+                const userDisp = document.getElementById('user-display-name');
+
+                if(currentRole === 'Admin') { badge.className = "bg-red-600 text-white px-2.5 py-0.5 rounded-full shadow-sm"; badge.innerText = "المدير العام المسؤول"; }
+                else if(currentRole === 'Reception') { badge.className = "bg-blue-600 text-white px-2.5 py-0.5 rounded-full shadow-sm"; badge.innerText = "مكتب الاستقبال والتسجيل"; }
+                else if(currentRole === 'Workshop') { badge.className = "bg-amber-500 text-white px-2.5 py-0.5 rounded-full shadow-sm"; badge.innerText = "فني عمال الورشة"; }
+
+                userDisp.innerText = `👤 الموظف الحالي: ${userName}`;
+                loginScreen.classList.add('hidden');
+                mainApp.classList.remove('hidden');
+                switchViews();
+            }
+        });
 
         window.login = function() {
+            const nameField = document.getElementById('auth-name').value.trim();
             const code = document.getElementById('auth-code').value.trim();
             const loginScreen = document.getElementById('login-screen');
             const mainApp = document.getElementById('main-app');
             const badge = document.getElementById('role-badge');
+            const userDisp = document.getElementById('user-display-name');
             const error = document.getElementById('login-error');
 
-            if(code === '11') { currentRole = 'Admin'; badge.className = "bg-red-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5 shadow-sm"; badge.innerText = "المدير العام المسؤول"; }
-            else if(code === '33') { currentRole = 'Reception'; badge.className = "bg-blue-600 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5 shadow-sm"; badge.innerText = "مكتب الاستقبال والتسجيل"; }
-            else if(code === '22') { currentRole = 'Workshop'; badge.className = "bg-amber-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full mt-0.5 shadow-sm"; badge.innerText = "فني عمال الورشة"; }
+            if(!nameField) { error.classList.remove('hidden'); return; }
+
+            if(code === '11') { currentRole = 'Admin'; badge.className = "bg-red-600 text-white px-2.5 py-0.5 rounded-full shadow-sm"; badge.innerText = "المدير العام المسؤول"; }
+            else if(code === '33') { currentRole = 'Reception'; badge.className = "bg-blue-600 text-white px-2.5 py-0.5 rounded-full shadow-sm"; badge.innerText = "مكتب الاستقبال والتسجيل"; }
+            else if(code === '22') { currentRole = 'Workshop'; badge.className = "bg-amber-500 text-white px-2.5 py-0.5 rounded-full shadow-sm"; badge.innerText = "فني عمال الورشة"; }
             else { error.classList.remove('hidden'); return; }
 
+            userName = nameField;
+            
+            // حفظ البيانات في الذاكرة لكي لا تضيع عند غلق المتصفح أو إطفاء الهاتف
+            localStorage.setItem('tour_expert_role', currentRole);
+            localStorage.setItem('tour_expert_username', userName);
+
+            userDisp.innerText = `👤 الموظف الحالي: ${userName}`;
             error.classList.add('hidden');
             loginScreen.classList.add('hidden');
             mainApp.classList.remove('hidden');
@@ -206,9 +325,27 @@
 
         window.logout = function() {
             currentRole = null;
+            userName = "";
+            // مسح السجلات من الذاكرة المحلية عند الخروج اليدوي المنتظم
+            localStorage.removeItem('tour_expert_role');
+            localStorage.removeItem('tour_expert_username');
+            
             document.getElementById('auth-code').value = '';
+            document.getElementById('auth-name').value = '';
             document.getElementById('main-app').classList.add('hidden');
             document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        window.toggleHistory = function() {
+            const wrapper = document.getElementById('history-wrapper');
+            const arrow = document.getElementById('history-arrow');
+            if(wrapper.classList.contains('hidden')) {
+                wrapper.classList.remove('hidden');
+                arrow.innerText = "🔼 إخفاء سجل الأمان";
+            } else {
+                wrapper.classList.add('hidden');
+                arrow.innerText = "🔽 إضغط لعرض السجل المباشر";
+            }
         }
 
         function switchViews() {
@@ -232,13 +369,15 @@
             
             const checkboxes = document.querySelectorAll('#order-form input[type="checkbox"]:checked');
             let servicesMap = {};
-            checkboxes.forEach(cb => { servicesMap[cb.value] = false; }); 
+            checkboxes.forEach(cb => { 
+                servicesMap[cb.value] = { done: false, worker: "" }; 
+            }); 
 
             if(customService) {
-                servicesMap[customService] = false;
+                servicesMap[customService] = { done: false, worker: "" };
             }
 
-            if(Object.keys(servicesMap).length === 0) { alert('يرجى اختيار أو كتابة خدمة واحدة على الأقل!'); return; }
+            if(Object.keys(servicesMap).length === 0) { alert('يرجى اختيار أو كتابة خدمة واحدة على الأقل لفتح الطلب!'); return; }
 
             try {
                 await addDoc(collection(db, "orders"), {
@@ -246,18 +385,19 @@
                     services: servicesMap,
                     workshopNotes: '', 
                     status: 'قيد الانتظار',
-                    updatedBy: 'الاستقبال',
+                    updatedBy: userName,
+                    completedAt: '',
                     createdAt: serverTimestamp()
                 });
                 
                 await addDoc(collection(db, "history"), {
-                    action: `إدخال قطعة جديدة للعميل [${clientName}] - الصنف: ${partType}`,
-                    by: 'مكتب الاستقبال',
+                    action: `تسجيل وإرسال قطعة جديدة للعميل [${clientName}] من نوع (${partType})`,
+                    by: `${userName} (الاستقبال)`,
                     timestamp: serverTimestamp()
                 });
 
                 document.getElementById('order-form').reset();
-                alert('تم إرسال الطلب وحفظه بنجاح حركي وفوري في النظام!');
+                alert('تم تسجيل البيانات وإطلاق إشعار فوري داخل الورشة بنجاح!');
             } catch (err) { console.error(err); }
         }
 
@@ -265,17 +405,17 @@
             try {
                 const orderRef = doc(db, "orders", orderId);
                 let updatedServices = { ...currentServices };
-                updatedServices[serviceName] = true;
+                updatedServices[serviceName] = { done: true, worker: userName };
 
                 await updateDoc(orderRef, {
                     services: updatedServices,
                     status: 'جارية',
-                    updatedBy: 'عامل الورشة'
+                    updatedBy: userName
                 });
 
                 await addDoc(collection(db, "history"), {
-                    action: `إنجاز وتأكيد الخدمة الفنية [${serviceName}] لقطعة العميل (${clientName})`,
-                    by: 'فني الورشة',
+                    action: `إنجاز الخدمة التقنية [${serviceName}] بنجاح لصالح قطعة الزبون (${clientName})`,
+                    by: `${userName} (فني الورشة)`,
                     timestamp: serverTimestamp()
                 });
             } catch (err) { console.error(err); }
@@ -284,54 +424,107 @@
         window.saveWorkshopNotes = async function(orderId, clientName) {
             const notesInput = document.getElementById(`workshop-note-field-${orderId}`);
             const text = notesInput.value.trim();
-            if(!text) { alert('يرجى كتابة الملاحظة أولاً'); return; }
+            if(!text) { alert('يرجى تدوين تقرير أو قياسات أولاً'); return; }
             try {
                 await updateDoc(doc(db, "orders", orderId), {
                     workshopNotes: text,
-                    updatedBy: 'عامل الورشة'
+                    updatedBy: userName
                 });
                 await addDoc(collection(db, "history"), {
-                    action: `إضافة تقرير تقني لطلب العميل [${clientName}]: ${text}`,
-                    by: 'فني الورشة',
+                    action: `تعديل وإضافة ملاحظة فنية لقطعة العميل [${clientName}]: ${text}`,
+                    by: `${userName} (فني الورشة)`,
                     timestamp: serverTimestamp()
                 });
-                alert('تم تدوين الملاحظة الفنية ومشاركتها مع الإدارة!');
+                alert('تم حفظ ومزامنة التقرير الفني مع الإدارة والمكتب بنجاح!');
             } catch (err) { console.error(err); }
         }
 
         window.completeOrder = async function(orderId, clientName) {
             try {
-                await updateDoc(doc(db, "orders", orderId), { status: 'منتهية', updatedBy: 'المدير' });
+                const nowStr = new Date().toLocaleString('ar-EG', { hour12: true });
+                await updateDoc(doc(db, "orders", orderId), { 
+                    status: 'منتهية', 
+                    updatedBy: userName,
+                    completedAt: nowStr 
+                });
                 await addDoc(collection(db, "history"), {
-                    action: `تأكيد تسليم القطعة كلياً للعميل وغلق الملف [${clientName}]`,
-                    by: 'المدير المسؤول',
+                    action: `تسليم القطعة نهائياً وإغلاق الملف للعميل [${clientName}] في تمام الساعة: ${nowStr}`,
+                    by: `${userName} (${currentRole === 'Admin' ? 'المدير' : 'الاستقبال'})`,
                     timestamp: serverTimestamp()
                 });
+                alert(`تم تأكيد خروج القطعة وتسليمها للعميل بنجاح في: ${nowStr}`);
             } catch (err) { console.error(err); }
         }
 
+        window.deleteOrder = async function(orderId, clientName) {
+            if(!confirm(`⚠️ تحذير أمني: هل أنت متأكد تمامًا من رغبتك في حذف طلبية العميل [${clientName}] نهائياً من قاعدة البيانات؟`)) return;
+            try {
+                await deleteDoc(doc(db, "orders", orderId));
+                await addDoc(collection(db, "history"), {
+                    action: `حذف كلي للطلبية الخاصة بالعميل [${clientName}] نهائياً وبشكل قطعي`,
+                    by: `${userName} (${currentRole === 'Admin' ? 'المدير' : 'الاستقبال'})`,
+                    timestamp: serverTimestamp()
+                });
+                alert('تم حذف الطلبية وإزالتها من النظام فورياً.');
+            } catch (err) { console.error(err); }
+        }
+
+        // الاستماع المباشر للتغييرات في قاعدة البيانات وإطلاق الإشعارات الحية والخارجية والشاشة مطفأة
         const qOrders = query(collection(db, "orders"), orderBy("createdAt", "desc"));
         onSnapshot(qOrders, (snapshot) => {
             let orders = [];
+            let newlyAddedOrder = null;
+
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    newlyAddedOrder = change.doc.data();
+                }
+            });
+
             snapshot.forEach((doc) => { orders.push({ id: doc.id, ...doc.data() }); });
+            
+            // إشعارات حية ومؤثرات صوتية وخارجية لعمال الورشة عند إضافة طلبية جديدة
+            if (!isFirstLoad && newlyAddedOrder && currentRole === 'Workshop') {
+                const descText = `العميل: ${newlyAddedOrder.clientName} - القطعة: ${newlyAddedOrder.partType}`;
+                
+                // 1. التنبيه البصري الداخلي
+                document.getElementById('toast-message').innerText = descText;
+                const toast = document.getElementById('notification-toast');
+                toast.classList.remove('hidden');
+                toast.style.transform = "translateX(0)";
+                
+                // 2. التنبيه الصوتي
+                playNotificationSound();
+                
+                // 3. التنبيه الخارجي الفوقي لشاشة قفل الهاتف والأنظمة الخارجية
+                sendExternalNotification("⚙️ طلبية عمل جديدة بورشة TOUR EXPERT", descText);
+                
+                setTimeout(() => {
+                    toast.style.transform = "translateX(-120%)";
+                    setTimeout(() => toast.classList.add('hidden'), 300);
+                }, 5000);
+            }
+            isFirstLoad = false;
+
             renderReception(orders);
             renderWorkshop(orders);
             renderAdmin(orders);
         });
 
+        // جلب سجل العمليات التاريخي (يعرض حصرياً في حساب المدير)
         const qHistory = query(collection(db, "history"), orderBy("timestamp", "desc"));
         onSnapshot(qHistory, (snapshot) => {
             let logsHtml = '';
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('ar-EG') : 'الآن';
-                logsHtml += `<div class="py-1.5 flex justify-between gap-4 text-[11px]">
-                    <span class="text-slate-400">[${time}]</span> 
-                    <span class="text-red-400 font-bold w-24">${data.by}:</span> 
-                    <span class="text-slate-200 flex-1">${data.action}</span>
+                logsHtml += `<div class="py-2 flex justify-between gap-4 text-[11px] border-b border-slate-900">
+                    <span class="text-slate-500 font-sans">[${time}]</span> 
+                    <span class="text-red-500 font-bold w-36 truncate">${data.by}:</span> 
+                    <span class="text-slate-300 flex-1 font-sans">${data.action}</span>
                 </div>`;
             });
-            document.getElementById('history-logs').innerHTML = logsHtml || '<p class="text-slate-500 py-2">لا توجد سجلات حالية.</p>';
+            document.getElementById('history-logs').innerHTML = logsHtml || '<p class="text-slate-500 py-2">لا توجد عمليات مسجلة بالسجل التاريخي حالياً.</p>';
         });
 
         function renderReception(orders) {
@@ -339,17 +532,45 @@
             orders.forEach(order => {
                 let color = order.status === 'قيد الانتظار' ? 'bg-amber-100 text-amber-800' : order.status === 'جارية' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800';
                 let expTime = order.expectedTime ? order.expectedTime.replace('T', ' ') : 'غير محدد';
+                
+                let allDone = true;
+                let servicesHtml = '<div class="flex flex-wrap gap-1 mt-2">';
+                if (order.services) {
+                    for (const [srvName, srvData] of Object.entries(order.services)) {
+                        const isDone = typeof srvData === 'object' ? srvData.done : srvData;
+                        const workerName = (typeof srvData === 'object' && srvData.worker) ? srvData.worker : "";
+                        if (!isDone) allDone = false;
+                        
+                        servicesHtml += `<span class="inline-block text-[10px] px-2 py-0.5 rounded shadow-sm font-bold ${isDone ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500'}">
+                            ${srvName} ${isDone ? `✓ (${workerName})` : ''}
+                        </span>`;
+                    }
+                }
+                servicesHtml += '</div>';
+
                 html += `
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-2">
-                    <div>
-                        <h4 class="font-bold text-slate-800">${order.clientName} <span class="text-xs font-normal text-slate-500">(${order.partType})</span></h4>
-                        <p class="text-xs text-slate-500 mt-1">🕒 موعد الاستلام المتفق عليه: <span class="text-red-600 font-bold">${expTime}</span></p>
-                        ${order.receptionNotes ? `<p class="text-xs text-slate-600 bg-slate-50 p-2 rounded mt-2 border-r-2 border-red-500">📝 ${order.receptionNotes}</p>` : ''}
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between md:items-center gap-4 hover:shadow-md transition duration-200 animate-fade-in">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-black text-slate-900 text-base">${order.clientName}</h4>
+                            <span class="text-xs bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-600">${order.partType}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">🕒 موعد الاستلام المحدد: <span class="text-red-600 font-bold">${expTime}</span></p>
+                        ${order.completedAt ? `<p class="text-xs text-emerald-600 font-black mt-1">✅ تاريخ الخروج الفعلي وتسليم العميل: ${order.completedAt}</p>` : ''}
+                        ${servicesHtml}
+                        ${order.receptionNotes ? `<p class="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg mt-2 border-r-4 border-red-500 font-medium">📝 ملاحظة الاستقبال: ${order.receptionNotes}</p>` : ''}
+                        ${order.workshopNotes ? `<p class="text-[11px] text-blue-800 bg-blue-50/60 p-2 rounded-lg mt-1 border-r-4 border-blue-600 font-medium">🛠️ تقرير ميكانيكي الورشة: ${order.workshopNotes}</p>` : ''}
                     </div>
-                    <span class="text-xs font-bold px-3 py-1 rounded-full text-center h-fit w-fit ${color}">${order.status}</span>
+                    <div class="flex flex-row md:flex-col items-end justify-between md:justify-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
+                        <span class="text-xs font-black px-3 py-1 rounded-full text-center ${color}">${order.status}</span>
+                        <div class="flex gap-1.5 mt-1">
+                            ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="text-xs bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-black px-3 py-2 rounded-xl shadow-sm transition active:scale-95 cursor-pointer">تأكيد التسليم للزبون ✔️</button>` : ''}
+                            <button onclick="deleteOrder('${order.id}', '${order.clientName}')" class="text-xs text-red-600 bg-red-50 hover:bg-red-100 font-bold px-2.5 py-2 rounded-xl transition" title="إزالة الطلب الخاطئ">🗑️ حذف</button>
+                        </div>
+                    </div>
                 </div>`;
             });
-            document.getElementById('reception-orders-list').innerHTML = html || '<p class="text-slate-400 text-sm">لا توجد طلبيات مسجلة.</p>';
+            document.getElementById('reception-orders-list').innerHTML = html || '<p class="text-slate-400 text-sm font-semibold text-center py-4">لا توجد طلبيات مدرجة حالياً بالسجلات.</p>';
         }
 
         function renderWorkshop(orders) {
@@ -361,43 +582,54 @@
                 let allDone = true;
                 const currentServicesObj = JSON.stringify(order.services).replace(/"/g, '&quot;');
 
-                for (const [service, isDone] of Object.entries(order.services)) {
-                    if(!isDone) allDone = false;
-                    servicesHtml += `
-                    <div class="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-100">
-                        <span class="text-xs ${isDone ? 'line-through text-slate-400' : 'text-slate-700 font-medium'}">${service}</span>
-                        ${isDone ? 
-                            `<span class="text-xs text-emerald-600 font-bold flex items-center gap-1">✔️ مكتمل</span>` : 
-                            `<button onclick="validateService('${order.id}', '${service}', '${order.clientName}', ${currentServicesObj})" class="text-xs bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded font-semibold transition">تأكيد الإنجاز</button>`
-                        }
-                    </div>`;
+                if (order.services) {
+                    for (const [service, srvData] of Object.entries(order.services)) {
+                        const isDone = typeof srvData === 'object' ? srvData.done : srvData;
+                        const workerName = (typeof srvData === 'object' && srvData.worker) ? srvData.worker : "";
+                        if(!isDone) allDone = false;
+                        
+                        servicesHtml += `
+                        <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-200/60 hover:bg-slate-100 transition">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold ${isDone ? 'line-through text-slate-400' : 'text-slate-800'}">${service}</span>
+                                ${isDone ? `<span class="text-[9px] text-slate-400 font-semibold">بواسطة: ${workerName}</span>` : ''}
+                            </div>
+                            ${isDone ? 
+                                `<span class="text-xs text-emerald-600 font-extrabold flex items-center gap-0.5">✔️ مكتمل</span>` : 
+                                `<button onclick="validateService('${order.id}', '${service}', '${order.clientName}', ${currentServicesObj})" class="text-[11px] bg-red-600 hover:bg-red-700 text-white px-2.5 py-1 rounded-lg font-bold shadow-sm transition active:scale-95 cursor-pointer">تأكيد الإنجاز</button>`
+                            }
+                        </div>`;
+                    }
                 }
 
                 let expTime = order.expectedTime ? order.expectedTime.replace('T', ' ') : 'غير محدد';
 
                 html += `
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-t-4 border-t-red-600">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition border-t-4 border-t-red-600 flex flex-col justify-between animate-fade-in">
                     <div>
-                        <div class="mb-2 pb-2 border-b border-slate-100">
-                            <h4 class="font-bold text-slate-900 text-sm">${order.clientName} <span class="text-xs font-normal text-slate-500">(${order.partType})</span></h4>
-                            <p class="text-[11px] text-red-600 font-semibold mt-1">🕒 توقيت التسليم الملتزم به: ${expTime}</p>
-                            ${order.receptionNotes ? `<p class="text-[11px] bg-red-50 text-slate-700 p-1.5 rounded mt-1">📋 ملاحظة الاستقبال: ${order.receptionNotes}</p>` : ''}
+                        <div class="mb-3 pb-2 border-b border-slate-100">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-black text-slate-900 text-sm md:text-base">${order.clientName}</h4>
+                                <span class="text-xs font-black px-2 py-0.5 rounded bg-slate-100 text-slate-600">${order.partType}</span>
+                            </div>
+                            <p class="text-[11px] text-red-600 font-bold mt-1">🕒 توقيت التسليم الملتزم به: ${expTime}</p>
+                            ${order.receptionNotes ? `<p class="text-[11px] bg-red-50/70 text-slate-700 p-2 rounded-lg mt-2 font-medium">📋 ملاحظة الاستقبال: ${order.receptionNotes}</p>` : ''}
                         </div>
-                        <div class="space-y-1.5 mt-2">${servicesHtml}</div>
+                        <div class="space-y-2 mt-2">${servicesHtml}</div>
                     </div>
                     
                     <div class="mt-4 pt-3 border-t border-slate-100">
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">✍️ تقرير فني الورشة الميكانيكي:</label>
-                        <div class="flex gap-1">
-                            <input type="text" id="workshop-note-field-${order.id}" value="${order.workshopNotes || ''}" placeholder="اكتب القياسات أو حالة التسطيح..." class="flex-1 text-xs p-1.5 border border-slate-200 rounded outline-none focus:border-red-500 bg-slate-50">
-                            <button onclick="saveWorkshopNotes('${order.id}', '${order.clientName}')" class="bg-slate-800 text-white text-xs px-2 py-1 rounded hover:bg-slate-900">حفظ</button>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">✍️ تقرير فني الورشة الميكانيكي وملاحظاته:</label>
+                        <div class="flex gap-1.5">
+                            <input type="text" id="workshop-note-field-${order.id}" value="${order.workshopNotes || ''}" placeholder="المقاسات، حالة الخرط أو التسطيح..." class="flex-1 text-xs p-2 border border-slate-200 rounded-xl outline-none focus:border-red-500 bg-slate-50 font-semibold transition">
+                            <button onclick="saveWorkshopNotes('${order.id}', '${order.clientName}')" class="bg-slate-900 hover:bg-slate-950 text-white font-bold text-xs px-3 py-1 rounded-xl transition cursor-pointer">حفظ</button>
                         </div>
                     </div>
 
-                    ${allDone ? `<div class="mt-3 text-center bg-emerald-50 p-2 rounded-lg"><span class="text-xs text-emerald-700 font-bold">🎉 جميع المهام جاهزة للتسليم!</span></div>` : ''}
+                    ${allDone ? `<div class="mt-3 text-center bg-emerald-50 p-2 rounded-xl border border-emerald-200 animate-pulse-subtle"><span class="text-xs text-emerald-700 font-black">🎉 القطعة جاهزة تماماً وتنتظر التسليم!</span></div>` : ''}
                 </div>`;
             });
-            document.getElementById('workshop-orders-list').innerHTML = html || '<p class="text-slate-400 col-span-full text-center py-6">الورشة لا تحتوي على قطع نشطة حالياً.</p>';
+            document.getElementById('workshop-orders-list').innerHTML = html || '<p class="text-slate-400 col-span-full text-center font-bold py-8">الورشة فارغة حالياً ولا تحتوي على قطع نشطة.</p>';
         }
 
         function renderAdmin(orders) {
@@ -413,30 +645,43 @@
                 else if (order.status === 'منتهية') completed++;
 
                 let color = order.status === 'قيد الانتظار' ? 'bg-amber-100 text-amber-800' : order.status === 'جارية' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800';
-                let servicesStatus = '';
+                let servicesStatus = '<div class="flex flex-col gap-1">';
                 
-                for (const [service, isDone] of Object.entries(order.services)) {
-                    servicesStatus += `<span class="inline-block text-[11px] px-1.5 py-0.5 rounded ${isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'} ml-1 mb-1">${service} ${isDone?'✓':''}</span>`;
+                if (order.services) {
+                    for (const [service, srvData] of Object.entries(order.services)) {
+                        const isDone = typeof srvData === 'object' ? srvData.done : srvData;
+                        const workerName = (typeof srvData === 'object' && srvData.worker) ? srvData.worker : "غير معروف";
+                        
+                        servicesStatus += `<span class="inline-block text-[10px] px-2 py-0.5 rounded shadow-sm w-fit ${isDone ? 'bg-emerald-50 text-emerald-800 border border-emerald-100' : 'bg-slate-100 text-slate-500'}">
+                            ${service} ${isDone ? `✓ (الفني: ${workerName})` : ''}
+                        </span>`;
+                    }
                 }
+                servicesStatus += '</div>';
 
-                let allDone = Object.values(order.services).every(v => v === true);
+                let allDone = order.services ? Object.values(order.services).every(v => typeof v === 'object' ? v.done : v) : false;
                 let expTime = order.expectedTime ? order.expectedTime.replace('T', ' ') : 'غير محدد';
 
                 tableHtml += `
-                <tr class="hover:bg-slate-50/50 transition text-xs">
-                    <td class="p-4 font-bold text-slate-900">${order.clientName}<br><span class="text-[11px] text-slate-500 font-normal">📱 ${order.phoneNumber}</span></td>
-                    <td class="p-4 text-slate-600 font-medium">
-                        <span class="font-bold text-slate-900">${order.partType}</span>
-                        ${order.receptionNotes ? `<div class="text-[10px] text-red-600 bg-red-50 p-1 rounded mt-1">💬 ${order.receptionNotes}</div>` : ''}
+                <tr class="hover:bg-slate-50/80 transition text-xs border-b border-slate-100 animate-fade-in">
+                    <td class="p-4 font-black text-slate-900 text-sm">${order.clientName}<br><span class="text-xs text-slate-500 font-mono font-bold">📱 ${order.phoneNumber}</span></td>
+                    <td class="p-4">
+                        <span class="font-black text-slate-900 text-xs bg-slate-100 px-2 py-0.5 rounded">${order.partType}</span>
+                        ${order.receptionNotes ? `<div class="text-[11px] text-red-600 bg-red-50 p-1.5 rounded-lg mt-1.5 font-medium border-r-2 border-red-500">💬 ${order.receptionNotes}</div>` : ''}
                     </td>
                     <td class="p-4">${servicesStatus}</td>
                     <td class="p-4">
-                        <span class="text-slate-700 italic font-mono">${order.workshopNotes || '<span class="text-slate-400">لا توجد تقارير</span>'}</span>
+                        <span class="text-slate-800 font-mono text-xs block whitespace-pre-line bg-slate-50 p-1.5 rounded-lg border border-slate-200/60">${order.workshopNotes || '<span class="text-slate-400 font-sans font-normal">لا توجد تقارير حتى الآن</span>'}</span>
+                        <div class="text-[9px] text-slate-400 mt-1 font-sans">آخر موظف عدّل: ${order.updatedBy || 'غير محدد'}</div>
                     </td>
                     <td class="p-4">
-                        <span class="block text-red-600 font-bold mb-1">[ ${expTime} ]</span>
-                        <span class="inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full ${color}">${order.status}</span>
-                        ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="block mt-2 text-[10px] bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-1 rounded shadow-sm cursor-pointer">تأكيد التسليم للزبون ✔️</button>` : ''}
+                        <span class="block text-red-600 font-bold mb-1 font-mono">[متوقع: ${expTime}]</span>
+                        ${order.completedAt ? `<span class="block text-emerald-600 font-black mb-1 font-mono">[خروج: ${order.completedAt}]</span>` : ''}
+                        <div class="flex items-center gap-3 mt-1.5">
+                            <span class="inline-block text-[11px] font-black px-2.5 py-0.5 rounded-full ${color}">${order.status}</span>
+                            <button onclick="deleteOrder('${order.id}', '${order.clientName}')" class="text-[11px] text-red-600 hover:text-red-800 font-black transition p-1 rounded hover:bg-red-50">🗑️ حذف</button>
+                        </div>
+                        ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="block mt-2.5 text-[11px] bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-black px-2.5 py-1.5 rounded-xl shadow-sm cursor-pointer transition active:scale-95">تأكيد التسليم للزبون ✔️</button>` : ''}
                     </td>
                 </tr>`;
             });
@@ -446,7 +691,7 @@
             document.getElementById('stat-progress').innerText = progress;
             document.getElementById('stat-completed').innerText = completed;
 
-            document.getElementById('admin-orders-table').innerHTML = tableHtml || '<tr><td colspan="5" class="p-4 text-center text-slate-400">لا توجد بيانات مسجلة في السجل.</td></tr>';
+            document.getElementById('admin-orders-table').innerHTML = tableHtml || '<tr><td colspan="5" class="p-6 text-center text-slate-400 font-bold text-sm">لا توجد بيانات مسجلة في ورشة العمل حالياً.</td></tr>';
         }
     </script>
 </body>
