@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <!-- شاشة تسجيل الدخول المتوافقة مع هوية TOUR EXPERT البصرية المتقدمة -->
+    <!-- شاشة تسجيل الدخول المتوافقة مع هوية TOUR EXPERT -->
     <div id="login-screen" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-red-600 via-slate-900 to-slate-950 relative overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.15)_0%,transparent_70%)]"></div>
         <div class="bg-white/95 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/20 transform transition duration-300 hover:shadow-red-500/10 relative z-10 animate-fade-in">
@@ -43,7 +43,6 @@
                 </div>
                 <h1 class="text-3xl font-black text-slate-950 tracking-wide font-sans bg-gradient-to-l from-red-600 to-slate-900 bg-clip-text text-transparent">TOUR EXPERT</h1>
                 <p class="text-slate-500 text-xs mt-1 font-bold">نظام المزامنة وإدارة عمليات الخراطة الفورية</p>
-                <!-- زر طلب تفعيل الإشغارات الخارجية -->
                 <button onclick="requestNotificationPermission()" id="perm-btn" class="mt-3 inline-block text-[11px] bg-amber-50 text-amber-700 font-bold px-3 py-1 rounded-lg border border-amber-200 cursor-pointer hover:bg-amber-100 transition">🔔 اضغط هنا لتفعيل إشعارات الهاتف الخارجية</button>
             </div>
             <div class="space-y-4">
@@ -82,8 +81,8 @@
         <main class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto space-y-6">
             
             <!-- واجهة مكتب الاستقبال -->
-            <div id="view-reception" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 h-fit sticky top-24">
+            <div id="view-reception" class="hidden flex flex-col lg:grid lg:grid-cols-3 gap-6 animate-fade-in">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 h-fit mb-6 lg:mb-0">
                     <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">📝 تسجيل طلبية جديدة</h3>
                     <form id="order-form" onsubmit="createOrder(event)" class="space-y-4">
                         <div>
@@ -137,26 +136,36 @@
                 <div id="workshop-orders-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
 
-            <!-- واجهة المدير العام (تحتوي على الإحصائيات، السجل العام، والسجل التاريخي للأمان) -->
+            <!-- واجهة المدير العام -->
             <div id="view-admin" class="hidden space-y-6 animate-fade-in">
-                <!-- قسم العدادات الحية مدمجة الألوان -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- قسم العدادات الحية مع إضافة زر السجل المتطور المخصص للمدير -->
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-slate-800 hover:scale-[1.02] transition">
-                        <p class="text-xs font-bold text-slate-500">إجمالي الطلبيات</p>
+                        <p class="text-xs font-bold text-slate-500">إجمالي طلبات الورشة</p>
                         <p id="stat-total" class="text-2xl font-black text-slate-900 mt-1">0</p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-amber-500 hover:scale-[1.02] transition">
-                        <p class="text-xs font-bold text-amber-600">قيد الانتظار</p>
+                        <p class="text-xs font-bold text-amber-600">انتظار الميكانيكي</p>
                         <p id="stat-pending" class="text-2xl font-black text-amber-600 mt-1">0</p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-blue-600 hover:scale-[1.02] transition">
-                        <p class="text-xs font-bold text-blue-600">جارية بالورشة</p>
+                        <p class="text-xs font-bold text-blue-600">قيد الخراطة الآن</p>
                         <p id="stat-progress" class="text-2xl font-black text-blue-600 mt-1">0</p>
                     </div>
                     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-emerald-500 hover:scale-[1.02] transition">
-                        <p class="text-xs font-bold text-emerald-600">المستلمة والمنتهية</p>
-                        <p id="stat-completed" class="text-2xl font-black text-emerald-600 mt-1">0</p>
+                        <p class="text-xs font-bold text-emerald-600">المدخول المحصل (خارجة)</p>
+                        <p class="text-lg font-black text-emerald-600 mt-1">DA <span id="stat-earnings">0</span></p>
                     </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm border-r-4 border-r-indigo-500 hover:scale-[1.02] transition">
+                        <p class="text-xs font-bold text-indigo-600">أموال قيد الإنتاج</p>
+                        <p class="text-lg font-black text-indigo-600 mt-1">DA <span id="stat-production-money">0</span></p>
+                    </div>
+                    <!-- زر السجل الاحترافي المطور للمدير فقط -->
+                    <button onclick="openWorkersLogModal()" class="bg-slate-900 hover:bg-slate-950 text-white p-4 rounded-xl shadow-md border-r-4 border-r-red-600 flex flex-col justify-center items-center gap-1 transition-all duration-200 active:scale-95 cursor-pointer col-span-2 md:col-span-1">
+                        <span class="text-xl">📊</span>
+                        <span class="text-[11px] font-black text-red-400 tracking-wide">Rapport Ouvriers</span>
+                        <span class="text-[10px] text-slate-300 font-bold">سجل إنتاج العمال</span>
+                    </button>
                 </div>
 
                 <!-- جدول المتابعة المتقدم للمدير العام -->
@@ -165,13 +174,14 @@
                         <h3 class="font-black text-slate-900">📊 لوحة التحكم والسجل العام للورشة</h3>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-right text-xs min-w-[750px]">
+                        <table class="w-full text-right text-xs min-w-[850px]">
                             <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
                                 <tr>
                                     <th class="p-4 text-sm">العميل والهاتف</th>
                                     <th class="p-4 text-sm">نوع القطعة وملاحظاتها</th>
                                     <th class="p-4 text-sm">الخدمات والمسؤول عن صيانة كل خدمة</th>
                                     <th class="p-4 text-sm">ملاحظات الورشة الفنية</th>
+                                    <th class="p-4 text-sm">السعر والمداخيل المحصلة</th>
                                     <th class="p-4 text-sm">التوقيت والحالة الإدارية</th>
                                 </tr>
                             </thead>
@@ -179,20 +189,55 @@
                         </table>
                     </div>
                 </div>
-
-                <!-- قسم السجل التاريخي للأمان (حساب المدير فقط وقابل للطي) -->
-                <div class="bg-slate-950 text-slate-100 rounded-2xl shadow-xl overflow-hidden border border-slate-800 transition-all duration-300">
-                    <button onclick="toggleHistory()" class="w-full p-4 md:p-5 flex justify-between items-center bg-slate-900/80 hover:bg-slate-900 font-black text-xs md:text-sm text-red-400 cursor-pointer outline-none transition">
-                        <span class="flex items-center gap-2">📜 السجل التاريخي للأمان ومراقبة الموظفين الحية (Admin Logs Only)</span>
-                        <span id="history-arrow" class="text-xs font-bold bg-slate-800 px-3 py-1 rounded-lg text-slate-300">🔽 إضغط لعرض السجل المباشر</span>
-                    </button>
-                    <div id="history-wrapper" class="hidden p-5 border-t border-slate-800 bg-slate-950">
-                        <div id="history-logs" class="space-y-2 max-h-60 overflow-y-auto font-mono text-[11px] divide-y divide-slate-900"></div>
-                    </div>
-                </div>
             </div>
 
         </main>
+    </div>
+
+    <!-- نافذة منبثقة متطورة لسجل العمال (فرنسية) متاح فقط للمدير -->
+    <div id="workers-log-modal" class="fixed inset-0 z-[150] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full border border-slate-100 overflow-hidden flex flex-col max-h-[85vh] animate-fade-in" dir="ltr">
+            <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🛠️</span>
+                    <div>
+                        <h4 class="text-sm font-black tracking-wide text-red-500 font-sans">HISTORIQUE DE PRODUCTION DES OUVRIERS</h4>
+                        <p class="text-[10px] text-slate-400 font-sans">Suivi en temps réel des tâches effectuées en atelier</p>
+                    </div>
+                </div>
+                <button onclick="closeWorkersLogModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs px-3 py-1.5 rounded-lg transition font-sans cursor-pointer">Fermer</button>
+            </div>
+            <div id="workers-log-container" class="p-4 overflow-y-auto space-y-2 flex-1 bg-slate-50 divide-y divide-slate-200/60 font-sans text-xs">
+                <!-- تحميل السجل هنا أوتوماتيكياً -->
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة منبثقة لإدخال السعر وتأكيد الخروج -->
+    <div id="price-modal" class="fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full border border-slate-100 animate-fade-in">
+            <h4 class="text-base font-black text-slate-900 mb-2 flex items-center gap-1.5">💰 استلام مستحقات العميل وتأكيد الخروج</h4>
+            <p id="modal-client-text" class="text-xs text-slate-500 mb-4 font-semibold"></p>
+            <input type="hidden" id="modal-order-id">
+            <input type="hidden" id="modal-client-name">
+            <div class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">المبلغ الإجمالي المستحق (DA)</label>
+                    <input type="number" id="modal-amount" placeholder="مثال: 4500" required class="w-full text-center text-lg p-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono font-bold bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">طريقة الدفع للمكتب</label>
+                    <select id="modal-payment-method" class="w-full p-2.5 border border-slate-200 rounded-xl bg-slate-50 text-xs font-bold">
+                        <option value="نقداً (Cash)">نقداً (Cash)</option>
+                        <option value="بطاقة بنكية / بريدية">بطاقة بنكية / بريدية</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button onclick="submitOrderCompletion()" class="flex-1 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-xs py-2.5 rounded-xl transition transition-all duration-200 shadow-md shadow-emerald-600/10 cursor-pointer active:scale-95">قبول وطباعة الخروج الفوري ✔️</button>
+                    <button onclick="closePriceModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs px-4 py-2.5 rounded-xl transition">إلغاء</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
@@ -216,7 +261,6 @@
         let userName = "";
         let isFirstLoad = true; 
 
-        // تفعيل طلب صلاحيات الإشعارات الخارجية للهاتف
         window.requestNotificationPermission = function() {
             if ("Notification" in window) {
                 Notification.requestPermission().then(permission => {
@@ -233,15 +277,14 @@
             }
         }
 
-        // دالة إنشاء صوت إشعار حقيقي وعالي عند إدخال طلبية جديدة
         function playNotificationSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // نغمة D5 مر تفعة ونقية
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); // نغمة A5
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); 
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
                 osc.connect(gain);
@@ -251,7 +294,6 @@
             } catch(e) { console.error("Audio Context Error", e); }
         }
 
-        // دالة إرسال الإشعار الخارجي على شاشة القفل والأنظمة بالخارج
         function sendExternalNotification(title, message) {
             if ("Notification" in window && Notification.permission === "granted") {
                 try {
@@ -264,7 +306,6 @@
             }
         }
 
-        // فحص الذاكرة المحلية لمعرفة ما إذا كان هناك عامل مسجل مسبقاً
         window.addEventListener('DOMContentLoaded', () => {
             const savedRole = localStorage.getItem('tour_expert_role');
             const savedName = localStorage.getItem('tour_expert_username');
@@ -312,7 +353,6 @@
 
             userName = nameField;
             
-            // حفظ البيانات في الذاكرة لكي لا تضيع عند غلق المتصفح أو إطفاء الهاتف
             localStorage.setItem('tour_expert_role', currentRole);
             localStorage.setItem('tour_expert_username', userName);
 
@@ -326,7 +366,6 @@
         window.logout = function() {
             currentRole = null;
             userName = "";
-            // مسح السجلات من الذاكرة المحلية عند الخروج اليدوي المنتظم
             localStorage.removeItem('tour_expert_role');
             localStorage.removeItem('tour_expert_username');
             
@@ -336,16 +375,12 @@
             document.getElementById('login-screen').classList.remove('hidden');
         }
 
-        window.toggleHistory = function() {
-            const wrapper = document.getElementById('history-wrapper');
-            const arrow = document.getElementById('history-arrow');
-            if(wrapper.classList.contains('hidden')) {
-                wrapper.classList.remove('hidden');
-                arrow.innerText = "🔼 إخفاء سجل الأمان";
-            } else {
-                wrapper.classList.add('hidden');
-                arrow.innerText = "🔽 إضغط لعرض السجل المباشر";
-            }
+        window.openWorkersLogModal = function() {
+            document.getElementById('workers-log-modal').classList.remove('hidden');
+        }
+
+        window.closeWorkersLogModal = function() {
+            document.getElementById('workers-log-modal').classList.add('hidden');
         }
 
         function switchViews() {
@@ -387,13 +422,9 @@
                     status: 'قيد الانتظار',
                     updatedBy: userName,
                     completedAt: '',
+                    price: 0,
+                    paymentMethod: '',
                     createdAt: serverTimestamp()
-                });
-                
-                await addDoc(collection(db, "history"), {
-                    action: `تسجيل وإرسال قطعة جديدة للعميل [${clientName}] من نوع (${partType})`,
-                    by: `${userName} (الاستقبال)`,
-                    timestamp: serverTimestamp()
                 });
 
                 document.getElementById('order-form').reset();
@@ -413,11 +444,14 @@
                     updatedBy: userName
                 });
 
-                await addDoc(collection(db, "history"), {
-                    action: `إنجاز الخدمة التقنية [${serviceName}] بنجاح لصالح قطعة الزبون (${clientName})`,
-                    by: `${userName} (فني الورشة)`,
+                // تسجيل المهمة في سجل إنتاجية العمال باللغة الفرنسية أوتوماتيكياً للمدير
+                await addDoc(collection(db, "workers_log"), {
+                    worker: userName,
+                    task: serviceName,
+                    client: clientName,
                     timestamp: serverTimestamp()
                 });
+
             } catch (err) { console.error(err); }
         }
 
@@ -430,29 +464,45 @@
                     workshopNotes: text,
                     updatedBy: userName
                 });
-                await addDoc(collection(db, "history"), {
-                    action: `تعديل وإضافة ملاحظة فنية لقطعة العميل [${clientName}]: ${text}`,
-                    by: `${userName} (فني الورشة)`,
-                    timestamp: serverTimestamp()
-                });
                 alert('تم حفظ ومزامنة التقرير الفني مع الإدارة والمكتب بنجاح!');
             } catch (err) { console.error(err); }
         }
 
-        window.completeOrder = async function(orderId, clientName) {
+        window.completeOrder = function(orderId, clientName) {
+            document.getElementById('modal-order-id').value = orderId;
+            document.getElementById('modal-client-name').value = clientName;
+            document.getElementById('modal-client-text').innerText = `العميل الحالى: ${clientName}`;
+            document.getElementById('modal-amount').value = '';
+            document.getElementById('price-modal').classList.remove('hidden');
+        }
+
+        window.closePriceModal = function() {
+            document.getElementById('price-modal').classList.add('hidden');
+        }
+
+        window.submitOrderCompletion = async function() {
+            const orderId = document.getElementById('modal-order-id').value;
+            const clientName = document.getElementById('modal-client-name').value;
+            const amount = parseFloat(document.getElementById('modal-amount').value);
+            const payMethod = document.getElementById('modal-payment-method').value;
+
+            if (isNaN(amount) || amount < 0) {
+                alert('يرجى إدخال مبلغ صحيح ومقبول!');
+                return;
+            }
+
             try {
                 const nowStr = new Date().toLocaleString('ar-EG', { hour12: true });
                 await updateDoc(doc(db, "orders", orderId), { 
                     status: 'منتهية', 
                     updatedBy: userName,
-                    completedAt: nowStr 
+                    completedAt: nowStr,
+                    price: amount,
+                    paymentMethod: payMethod
                 });
-                await addDoc(collection(db, "history"), {
-                    action: `تسليم القطعة نهائياً وإغلاق الملف للعميل [${clientName}] في تمام الساعة: ${nowStr}`,
-                    by: `${userName} (${currentRole === 'Admin' ? 'المدير' : 'الاستقبال'})`,
-                    timestamp: serverTimestamp()
-                });
-                alert(`تم تأكيد خروج القطعة وتسليمها للعميل بنجاح في: ${nowStr}`);
+
+                closePriceModal();
+                alert(`تم إنهاء وتأكيد خروج القطعة واستلام مبلغ ${amount} DA بنجاح!`);
             } catch (err) { console.error(err); }
         }
 
@@ -460,16 +510,10 @@
             if(!confirm(`⚠️ تحذير أمني: هل أنت متأكد تمامًا من رغبتك في حذف طلبية العميل [${clientName}] نهائياً من قاعدة البيانات؟`)) return;
             try {
                 await deleteDoc(doc(db, "orders", orderId));
-                await addDoc(collection(db, "history"), {
-                    action: `حذف كلي للطلبية الخاصة بالعميل [${clientName}] نهائياً وبشكل قطعي`,
-                    by: `${userName} (${currentRole === 'Admin' ? 'المدير' : 'الاستقبال'})`,
-                    timestamp: serverTimestamp()
-                });
                 alert('تم حذف الطلبية وإزالتها من النظام فورياً.');
             } catch (err) { console.error(err); }
         }
 
-        // الاستماع المباشر للتغييرات في قاعدة البيانات وإطلاق الإشعارات الحية والخارجية والشاشة مطفأة
         const qOrders = query(collection(db, "orders"), orderBy("createdAt", "desc"));
         onSnapshot(qOrders, (snapshot) => {
             let orders = [];
@@ -483,20 +527,15 @@
 
             snapshot.forEach((doc) => { orders.push({ id: doc.id, ...doc.data() }); });
             
-            // إشعارات حية ومؤثرات صوتية وخارجية لعمال الورشة عند إضافة طلبية جديدة
             if (!isFirstLoad && newlyAddedOrder && currentRole === 'Workshop') {
                 const descText = `العميل: ${newlyAddedOrder.clientName} - القطعة: ${newlyAddedOrder.partType}`;
                 
-                // 1. التنبيه البصري الداخلي
                 document.getElementById('toast-message').innerText = descText;
                 const toast = document.getElementById('notification-toast');
                 toast.classList.remove('hidden');
                 toast.style.transform = "translateX(0)";
                 
-                // 2. التنبيه الصوتي
                 playNotificationSound();
-                
-                // 3. التنبيه الخارجي الفوقي لشاشة قفل الهاتف والأنظمة الخارجية
                 sendExternalNotification("⚙️ طلبية عمل جديدة بورشة TOUR EXPERT", descText);
                 
                 setTimeout(() => {
@@ -511,27 +550,37 @@
             renderAdmin(orders);
         });
 
-        // جلب سجل العمليات التاريخي (يعرض حصرياً في حساب المدير)
-        const qHistory = query(collection(db, "history"), orderBy("timestamp", "desc"));
-        onSnapshot(qHistory, (snapshot) => {
-            let logsHtml = '';
+        // مزامنة حية لسجل إنتاجية العمال المتاح للمدير باللغة الفرنسية فقط
+        const qWorkersLog = query(collection(db, "workers_log"), orderBy("timestamp", "desc"));
+        onSnapshot(qWorkersLog, (snapshot) => {
+            let logHtml = '';
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('ar-EG') : 'الآن';
-                logsHtml += `<div class="py-2 flex justify-between gap-4 text-[11px] border-b border-slate-900">
-                    <span class="text-slate-500 font-sans">[${time}]</span> 
-                    <span class="text-red-500 font-bold w-36 truncate">${data.by}:</span> 
-                    <span class="text-slate-300 flex-1 font-sans">${data.action}</span>
+                const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : 'Maintenant';
+                const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('fr-FR') : '';
+                
+                logHtml += `
+                <div class="py-2.5 px-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 hover:bg-slate-100/80 transition rounded-lg">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-blue-100 text-blue-800 text-[10px] font-black px-2 py-0.5 rounded uppercase">Ouvrier</span>
+                        <span class="font-extrabold text-slate-900">${data.worker}</span>
+                    </div>
+                    <div class="flex-1 text-slate-700 font-medium">
+                        A effectué la tâche <span class="text-red-600 font-bold font-sans">[${data.task}]</span> pour le client <span class="text-slate-900 font-bold">(${data.client})</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400 font-bold whitespace-nowrap font-sans">
+                        ⏱️ ${date} à ${time}
+                    </div>
                 </div>`;
             });
-            document.getElementById('history-logs').innerHTML = logsHtml || '<p class="text-slate-500 py-2">لا توجد عمليات مسجلة بالسجل التاريخي حالياً.</p>';
+            document.getElementById('workers-log-container').innerHTML = logHtml || '<p class="text-slate-400 text-center py-4 font-sans">Aucune tâche enregistrée pour le moment.</p>';
         });
 
         function renderReception(orders) {
             let html = '';
             orders.forEach(order => {
                 let color = order.status === 'قيد الانتظار' ? 'bg-amber-100 text-amber-800' : order.status === 'جارية' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800';
-                let expTime = order.expectedTime ? order.expectedTime.replace('T', ' ') : 'غير محدد';
+                let expTime = order.expectedTime ? order.expectedTime.replace('T', ' ') : 'غير مححدد';
                 
                 let allDone = true;
                 let servicesHtml = '<div class="flex flex-wrap gap-1 mt-2">';
@@ -556,7 +605,7 @@
                             <span class="text-xs bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-600">${order.partType}</span>
                         </div>
                         <p class="text-xs text-slate-500 mt-1">🕒 موعد الاستلام المحدد: <span class="text-red-600 font-bold">${expTime}</span></p>
-                        ${order.completedAt ? `<p class="text-xs text-emerald-600 font-black mt-1">✅ تاريخ الخروج الفعلي وتسليم العميل: ${order.completedAt}</p>` : ''}
+                        ${order.completedAt ? `<p class="text-xs text-emerald-600 font-black mt-1">✅ تم الخروج بمبلغ: <span class="underline">${order.price || 0} DA</span> (${order.paymentMethod || ''}) في: ${order.completedAt}</p>` : ''}
                         ${servicesHtml}
                         ${order.receptionNotes ? `<p class="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg mt-2 border-r-4 border-red-500 font-medium">📝 ملاحظة الاستقبال: ${order.receptionNotes}</p>` : ''}
                         ${order.workshopNotes ? `<p class="text-[11px] text-blue-800 bg-blue-50/60 p-2 rounded-lg mt-1 border-r-4 border-blue-600 font-medium">🛠️ تقرير ميكانيكي الورشة: ${order.workshopNotes}</p>` : ''}
@@ -564,8 +613,8 @@
                     <div class="flex flex-row md:flex-col items-end justify-between md:justify-center gap-2 border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
                         <span class="text-xs font-black px-3 py-1 rounded-full text-center ${color}">${order.status}</span>
                         <div class="flex gap-1.5 mt-1">
-                            ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="text-xs bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-black px-3 py-2 rounded-xl shadow-sm transition active:scale-95 cursor-pointer">تأكيد التسليم للزبون ✔️</button>` : ''}
-                            <button onclick="deleteOrder('${order.id}', '${order.clientName}')" class="text-xs text-red-600 bg-red-50 hover:bg-red-100 font-bold px-2.5 py-2 rounded-xl transition" title="إزالة الطلب الخاطئ">🗑️ حذف</button>
+                            ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="text-xs bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-black px-3 py-2 rounded-xl shadow-sm transition active:scale-95 cursor-pointer">تأكيد التسليم والقبول 💰</button>` : ''}
+                            <button onclick="deleteOrder('${order.id}', '${order.clientName}')" class="text-xs text-red-600 bg-red-50 hover:bg-red-100 font-bold px-2.5 py-2 rounded-xl transition" title="إزالة الطلب">🗑️ حذف</button>
                         </div>
                     </div>
                 </div>`;
@@ -626,7 +675,7 @@
                         </div>
                     </div>
 
-                    ${allDone ? `<div class="mt-3 text-center bg-emerald-50 p-2 rounded-xl border border-emerald-200 animate-pulse-subtle"><span class="text-xs text-emerald-700 font-black">🎉 القطعة جاهزة تماماً وتنتظر التسليم!</span></div>` : ''}
+                    ${allDone ? `<div class="mt-3 text-center bg-emerald-50 p-2 rounded-xl border border-emerald-200 animate-pulse-subtle"><span class="text-xs text-emerald-700 font-black">🎉 القطعة جاهزة تماماً وتنتظر تسعير المكتب والزبون!</span></div>` : ''}
                 </div>`;
             });
             document.getElementById('workshop-orders-list').innerHTML = html || '<p class="text-slate-400 col-span-full text-center font-bold py-8">الورشة فارغة حالياً ولا تحتوي على قطع نشطة.</p>';
@@ -637,12 +686,19 @@
             let total = orders.length;
             let pending = 0;
             let progress = 0;
-            let completed = 0;
+            let totalEarnings = 0; 
+            let innerPendingMoney = 0; 
 
             orders.forEach(order => {
-                if (order.status === 'قيد الانتظار') pending++;
-                else if (order.status === 'جارية') progress++;
-                else if (order.status === 'منتهية') completed++;
+                let currentPrice = order.price ? parseFloat(order.price) : 0;
+
+                if (order.status === 'قيد الانتظار') {
+                    pending++;
+                } else if (order.status === 'جارية') {
+                    progress++;
+                } else if (order.status === 'منتهية') {
+                    totalEarnings += currentPrice; 
+                }
 
                 let color = order.status === 'قيد الانتظار' ? 'bg-amber-100 text-amber-800' : order.status === 'جارية' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800';
                 let servicesStatus = '<div class="flex flex-col gap-1">';
@@ -674,6 +730,14 @@
                         <span class="text-slate-800 font-mono text-xs block whitespace-pre-line bg-slate-50 p-1.5 rounded-lg border border-slate-200/60">${order.workshopNotes || '<span class="text-slate-400 font-sans font-normal">لا توجد تقارير حتى الآن</span>'}</span>
                         <div class="text-[9px] text-slate-400 mt-1 font-sans">آخر موظف عدّل: ${order.updatedBy || 'غير محدد'}</div>
                     </td>
+                    <td class="p-4 font-mono font-bold text-sm text-slate-950">
+                        ${order.status === 'منتهية' ? `
+                            <span class="text-emerald-600 block">DA ${currentPrice}</span>
+                            <span class="text-[10px] text-slate-400 block font-sans font-semibold">${order.paymentMethod || ''}</span>
+                        ` : `
+                            <span class="text-slate-400 font-sans text-xs font-normal">لم يحدد (قيد الصيانة)</span>
+                        `}
+                    </td>
                     <td class="p-4">
                         <span class="block text-red-600 font-bold mb-1 font-mono">[متوقع: ${expTime}]</span>
                         ${order.completedAt ? `<span class="block text-emerald-600 font-black mb-1 font-mono">[خروج: ${order.completedAt}]</span>` : ''}
@@ -681,7 +745,7 @@
                             <span class="inline-block text-[11px] font-black px-2.5 py-0.5 rounded-full ${color}">${order.status}</span>
                             <button onclick="deleteOrder('${order.id}', '${order.clientName}')" class="text-[11px] text-red-600 hover:text-red-800 font-black transition p-1 rounded hover:bg-red-50">🗑️ حذف</button>
                         </div>
-                        ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="block mt-2.5 text-[11px] bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-black px-2.5 py-1.5 rounded-xl shadow-sm cursor-pointer transition active:scale-95">تأكيد التسليم للزبون ✔️</button>` : ''}
+                        ${(allDone && order.status !== 'منتهية') ? `<button onclick="completeOrder('${order.id}', '${order.clientName}')" class="block mt-2.5 text-[11px] bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-black px-2.5 py-1.5 rounded-xl shadow-sm cursor-pointer transition active:scale-95">تأكيد التسليم والقبول 💰</button>` : ''}
                     </td>
                 </tr>`;
             });
@@ -689,9 +753,10 @@
             document.getElementById('stat-total').innerText = total;
             document.getElementById('stat-pending').innerText = pending;
             document.getElementById('stat-progress').innerText = progress;
-            document.getElementById('stat-completed').innerText = completed;
+            document.getElementById('stat-earnings').innerText = totalEarnings.toLocaleString();
+            document.getElementById('stat-production-money').innerText = innerPendingMoney.toLocaleString();
 
-            document.getElementById('admin-orders-table').innerHTML = tableHtml || '<tr><td colspan="5" class="p-6 text-center text-slate-400 font-bold text-sm">لا توجد بيانات مسجلة في ورشة العمل حالياً.</td></tr>';
+            document.getElementById('admin-orders-table').innerHTML = tableHtml || '<tr><td colspan="6" class="p-6 text-center text-slate-400 font-bold text-sm">لا توجد بيانات مسجلة في ورشة العمل حالياً.</td></tr>';
         }
     </script>
 </body>
